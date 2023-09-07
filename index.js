@@ -113,15 +113,14 @@ function clickLetter(e) {
 function submitGuess() {
   if (checkIsWord()) {
     errorMessage.innerText = '';
+    guesses.push(guess)
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
-    }
-    else if (guesses.length === 6) {
+    } else if (guesses.length === 6) {
       setTimeout(declareLoser, 1000);
     } else {
       changeRow();
-      guesses.push(guess)
     }
   } else {
     errorMessage.innerText = 'Not a valid word. Try again!';
