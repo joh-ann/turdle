@@ -187,22 +187,30 @@ function changeRow() {
 }
 
 function declareWinner() {
-  recordGameStats();
+  recordGameStats('win');
   changeGameOverText();
-  viewGameOverMessage(result);
+  viewGameOverMessage('win');
   setTimeout(startNewGame, 4000);
 }
 
-// A message appears on the screen letting the user know they have lost.
+function declareLoser() {
+  recordGameStats('loss');
+  changeGameOverText();
+  viewGameOverMessage('loss');
+  setTimeout(startNewGame, 4000);
+}
+
 // The game board clears all previous guesses.
 // The focus is put back on the top left square of the game board (as it does on page load).
 // The key on the left side of the screen resets so all letters are black.
 // A new winning word is created.
-// The game stats should be stored in the gamesPlayed variable as { solved: false, guesses: 6 }
 
-
-function recordGameStats() {
+function recordGameStats(result) {
+  if (result === 'win') {
   gamesPlayed.push({ solved: true, guesses: currentRow });
+  } else {
+  gamesPlayed.push({ solved: false, guesses: 6 });
+  }
 }
 
 function changeGameOverText() {
