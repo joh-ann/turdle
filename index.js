@@ -117,7 +117,7 @@ function submitGuess() {
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
-    } else if (guesses.length === 6) {
+    } else if (guesses.length >= 6) {
       setTimeout(declareLoser, 1000);
     } else {
       changeRow();
@@ -283,6 +283,8 @@ function viewGameOverMessage(result) {
     gameBoard.classList.add('collapsed');
     lossSection.classList.add('collapsed')
     lossMsg.classList.add('collapsed')
+    winSection.classList.remove('collapsed');
+    winMsg.classList.remove('collapsed')
   } else if (result === 'loss') {
     gameOverBox.classList.remove('collapsed')
     letterKey.classList.add('hidden');
