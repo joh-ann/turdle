@@ -20,6 +20,12 @@ var gameOverBox = document.querySelector('#game-over-section');
 var gameOverGuessCount = document.querySelector('#game-over-guesses-count');
 var gameOverGuessGrammar = document.querySelector('#game-over-guesses-plural');
 
+// Additions
+var winSection = document.querySelector('#game-win-message');
+var lossSection = document.querySelector('#game-loss-message');
+var winMsg = document.querySelector('.result-win');
+var lossMsg = document.querySelector('.result-loss');
+
 // Event Listeners
 window.addEventListener('load', fetchWordsAPI);
 
@@ -183,9 +189,17 @@ function changeRow() {
 function declareWinner() {
   recordGameStats();
   changeGameOverText();
-  viewGameOverMessage();
+  viewGameOverMessage(result);
   setTimeout(startNewGame, 4000);
 }
+
+// A message appears on the screen letting the user know they have lost.
+// The game board clears all previous guesses.
+// The focus is put back on the top left square of the game board (as it does on page load).
+// The key on the left side of the screen resets so all letters are black.
+// A new winning word is created.
+// The game stats should be stored in the gamesPlayed variable as { solved: false, guesses: 6 }
+
 
 function recordGameStats() {
   gamesPlayed.push({ solved: true, guesses: currentRow });
@@ -203,7 +217,7 @@ function changeGameOverText() {
 function startNewGame() {
   clearGameBoard();
   clearKey();
-  setGame();
+  setGame(words);
   viewGame();
   inputs[0].focus();
 }
@@ -254,8 +268,20 @@ function viewStats() {
   viewStatsButton.classList.add('active');
 }
 
-function viewGameOverMessage() {
-  gameOverBox.classList.remove('collapsed')
-  letterKey.classList.add('hidden');
-  gameBoard.classList.add('collapsed');
+function viewGameOverMessage(result) {
+  if (result === 'win') {
+    gameOverBox.classList.remove('collapsed')
+    letterKey.classList.add('hidden');
+    gameBoard.classList.add('collapsed');
+    lossSection.classList.add('collapsed')
+    lossMsg.classList.add('collapsed')
+  } else if (result === 'loss') {
+    gameOverBox.classList.remove('collapsed')
+    letterKey.classList.add('hidden');
+    gameBoard.classList.add('collapsed');
+    winSection.classList.add('collapsed');
+    winMsg.classList.add('collapsed')
+    lossSection.classList.remove('collapsed')
+    lossMsg.classList.remove('collapsed')
+  }
 }
