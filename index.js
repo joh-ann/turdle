@@ -30,12 +30,20 @@ var lossMsg = document.querySelector('.result-loss');
 window.addEventListener('load', fetchWordsAPI);
 
 for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('keyup', function() { moveToNextInput(event) });
+  inputs[i].addEventListener('keyup', function() { 
+    // Check if the Enter key is pressed (key code 13)
+    if (event.keyCode === 13) {
+      submitGuess();
+    } else {
+    moveToNextInput(event) 
+    }
+  });
 }
 
 for (var i = 0; i < keyLetters.length; i++) {
   keyLetters[i].addEventListener('click', function() { clickLetter(event) });
 }
+
 
 guessButton.addEventListener('click', submitGuess);
 
