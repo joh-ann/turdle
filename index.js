@@ -21,7 +21,7 @@ var gameOverGuessCount = document.querySelector('#game-over-guesses-count');
 var gameOverGuessGrammar = document.querySelector('#game-over-guesses-plural');
 
 // Event Listeners
-window.addEventListener('load', setGame);
+window.addEventListener('load', fetchWordsAPI);
 
 for (var i = 0; i < inputs.length; i++) {
   inputs[i].addEventListener('keyup', function() { moveToNextInput(event) });
@@ -38,6 +38,21 @@ viewRulesButton.addEventListener('click', viewRules);
 viewGameButton.addEventListener('click', viewGame);
 
 viewStatsButton.addEventListener('click', viewStats);
+
+let words = []
+
+// Fetch
+function fetchWordsAPI(){
+  fetch('http://localhost:3001/api/v1/words')
+    .then(response => response.json())
+    .then(data => {
+      words = data
+      setGame()
+    })
+    .catch(error => {
+      console.error("Error: ", error)
+    })
+}
 
 // Functions
 function setGame() {
