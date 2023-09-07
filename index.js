@@ -20,11 +20,25 @@ var gameOverBox = document.querySelector('#game-over-section');
 var gameOverGuessCount = document.querySelector('#game-over-guesses-count');
 var gameOverGuessGrammar = document.querySelector('#game-over-guesses-plural');
 
+// Additions
+var winSection = document.querySelector('#game-win-message');
+var lossSection = document.querySelector('#game-loss-message');
+var winMsg = document.querySelector('.result-win');
+var lossMsg = document.querySelector('.result-loss');
+
 // Event Listeners
-window.addEventListener('load', setGame);
+window.addEventListener('load', fetchWordsAPI);
 
 for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('keyup', function() { moveToNextInput(event) });
+  inputs[i].addEventListener('keyup', function(event) { 
+    if (event.key === 'Enter') { // Check if the Enter key is pressed
+      event.preventDefault(); // To prevent "Enter" from "submitting the form" and call submitGuess and moveToNextInput instead
+      submitGuess();
+      moveToNextInput(event) 
+    } else {
+    moveToNextInput(event) 
+    }
+  });
 }
 
 for (var i = 0; i < keyLetters.length; i++) {
@@ -39,15 +53,32 @@ viewGameButton.addEventListener('click', viewGame);
 
 viewStatsButton.addEventListener('click', viewStats);
 
+// Additions
+let words = []
+var guesses = [];
+
+// Fetch
+function fetchWordsAPI(){
+  fetch('http://localhost:3001/api/v1/words')
+    .then(response => response.json())
+    .then(data => {
+      words = data
+      setGame(words)
+    })
+    .catch(error => {
+      console.error("Error: ", error)
+    })
+}
+
 // Functions
-function setGame() {
+function setGame(words) {
   currentRow = 1;
-  winningWord = getRandomWord();
+  winningWord = getRandomWord(words);
   updateInputPermissions();
 }
 
-function getRandomWord() {
-  var randomIndex = Math.floor(Math.random() * 2500);
+function getRandomWord(words) {
+  var randomIndex = Math.floor(Math.random() * words.length);
   return words[randomIndex];
 }
 
@@ -66,7 +97,7 @@ function updateInputPermissions() {
 function moveToNextInput(e) {
   var key = e.keyCode || e.charCode;
 
-  if( key !== 8 && key !== 46 ) {
+  if( key !== 8 && key !== 46 && !e.target.id.includes('29')) {
     var indexOfNext = parseInt(e.target.id.split('-')[2]) + 1;
     inputs[indexOfNext].focus();
   }
@@ -90,9 +121,12 @@ function clickLetter(e) {
 function submitGuess() {
   if (checkIsWord()) {
     errorMessage.innerText = '';
+    guesses.push(guess)
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
+    } else if (guesses.length >= 6) {
+      setTimeout(declareLoser, 1000);
     } else {
       changeRow();
     }
@@ -166,14 +200,25 @@ function changeRow() {
 }
 
 function declareWinner() {
-  recordGameStats();
+  recordGameStats('win');
   changeGameOverText();
-  viewGameOverMessage();
+  viewGameOverMessage('win');
   setTimeout(startNewGame, 4000);
 }
 
-function recordGameStats() {
+function declareLoser() {
+  recordGameStats('loss');
+  changeGameOverText();
+  viewGameOverMessage('loss');
+  setTimeout(startNewGame, 4000);
+}
+
+function recordGameStats(result) {
+  if (result === 'win') {
   gamesPlayed.push({ solved: true, guesses: currentRow });
+  } else {
+  gamesPlayed.push({ solved: false, guesses: 6 });
+  }
 }
 
 function changeGameOverText() {
@@ -188,7 +233,8 @@ function changeGameOverText() {
 function startNewGame() {
   clearGameBoard();
   clearKey();
-  setGame();
+  clearGuesses();
+  setGame(words);
   viewGame();
   inputs[0].focus();
 }
@@ -239,8 +285,26 @@ function viewStats() {
   viewStatsButton.classList.add('active');
 }
 
-function viewGameOverMessage() {
-  gameOverBox.classList.remove('collapsed')
-  letterKey.classList.add('hidden');
-  gameBoard.classList.add('collapsed');
+function viewGameOverMessage(result) {
+  if (result === 'win') {
+    gameOverBox.classList.remove('collapsed')
+    letterKey.classList.add('hidden');
+    gameBoard.classList.add('collapsed');
+    lossSection.classList.add('collapsed')
+    lossMsg.classList.add('collapsed')
+    winSection.classList.remove('collapsed');
+    winMsg.classList.remove('collapsed')
+  } else if (result === 'loss') {
+    gameOverBox.classList.remove('collapsed')
+    letterKey.classList.add('hidden');
+    gameBoard.classList.add('collapsed');
+    winSection.classList.add('collapsed');
+    winMsg.classList.add('collapsed')
+    lossSection.classList.remove('collapsed')
+    lossMsg.classList.remove('collapsed')
+  }
+}
+
+function clearGuesses() {
+  guesses = [];
 }
