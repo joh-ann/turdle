@@ -47,7 +47,7 @@ function fetchWordsAPI(){
     .then(response => response.json())
     .then(data => {
       words = data
-      setGame()
+      setGame(words)
     })
     .catch(error => {
       console.error("Error: ", error)
@@ -55,14 +55,14 @@ function fetchWordsAPI(){
 }
 
 // Functions
-function setGame() {
+function setGame(words) {
   currentRow = 1;
-  winningWord = getRandomWord();
+  winningWord = getRandomWord(words);
   updateInputPermissions();
 }
 
-function getRandomWord() {
-  var randomIndex = Math.floor(Math.random() * 2500);
+function getRandomWord(words) {
+  var randomIndex = Math.floor(Math.random() * words.length);
   return words[randomIndex];
 }
 
