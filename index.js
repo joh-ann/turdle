@@ -31,8 +31,8 @@ window.addEventListener('load', fetchWordsAPI);
 
 for (var i = 0; i < inputs.length; i++) {
   inputs[i].addEventListener('keyup', function(event) { 
-    if (event.key === 'Enter') {     // Check if the Enter key is pressed
-      event.preventDefault();
+    if (event.key === 'Enter') { // Check if the Enter key is pressed
+      event.preventDefault(); // To prevent "Enter" from "submitting the form" and call submitGuess and moveToNextInput instead
       submitGuess();
       moveToNextInput(event) 
     } else {
@@ -44,7 +44,6 @@ for (var i = 0; i < inputs.length; i++) {
 for (var i = 0; i < keyLetters.length; i++) {
   keyLetters[i].addEventListener('click', function() { clickLetter(event) });
 }
-
 
 guessButton.addEventListener('click', submitGuess);
 
@@ -234,6 +233,7 @@ function changeGameOverText() {
 function startNewGame() {
   clearGameBoard();
   clearKey();
+  clearGuesses();
   setGame(words);
   viewGame();
   inputs[0].focus();
@@ -303,4 +303,8 @@ function viewGameOverMessage(result) {
     lossSection.classList.remove('collapsed')
     lossMsg.classList.remove('collapsed')
   }
+}
+
+function clearGuesses() {
+  guesses = [];
 }
