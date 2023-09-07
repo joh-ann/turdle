@@ -45,7 +45,9 @@ viewGameButton.addEventListener('click', viewGame);
 
 viewStatsButton.addEventListener('click', viewStats);
 
+// Additions
 let words = []
+var guesses = [];
 
 // Fetch
 function fetchWordsAPI(){
@@ -87,7 +89,7 @@ function updateInputPermissions() {
 function moveToNextInput(e) {
   var key = e.keyCode || e.charCode;
 
-  if( key !== 8 && key !== 46 ) {
+  if( key !== 8 && key !== 46 && !e.target.id.includes('29')) {
     var indexOfNext = parseInt(e.target.id.split('-')[2]) + 1;
     inputs[indexOfNext].focus();
   }
@@ -114,10 +116,12 @@ function submitGuess() {
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
-    } else if (gamesPlayed[0].guesses === 6) {
+    }
+    else if (guesses.length === 6) {
       setTimeout(declareLoser, 1000);
     } else {
       changeRow();
+      guesses.push(guess)
     }
   } else {
     errorMessage.innerText = 'Not a valid word. Try again!';
@@ -201,11 +205,6 @@ function declareLoser() {
   viewGameOverMessage('loss');
   setTimeout(startNewGame, 4000);
 }
-
-// The game board clears all previous guesses.
-// The focus is put back on the top left square of the game board (as it does on page load).
-// The key on the left side of the screen resets so all letters are black.
-// A new winning word is created.
 
 function recordGameStats(result) {
   if (result === 'win') {
