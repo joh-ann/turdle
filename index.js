@@ -114,6 +114,8 @@ function submitGuess() {
     compareGuess();
     if (checkForWin()) {
       setTimeout(declareWinner, 1000);
+    } else if (gamesPlayed[0].guesses === 6) {
+      setTimeout(declareLoser, 1000);
     } else {
       changeRow();
     }
