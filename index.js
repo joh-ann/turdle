@@ -30,10 +30,11 @@ var lossMsg = document.querySelector('.result-loss');
 window.addEventListener('load', fetchWordsAPI);
 
 for (var i = 0; i < inputs.length; i++) {
-  inputs[i].addEventListener('keyup', function() { 
-    // Check if the Enter key is pressed (key code 13)
-    if (event.keyCode === 13) {
+  inputs[i].addEventListener('keyup', function(event) { 
+    if (event.key === 'Enter') {     // Check if the Enter key is pressed
+      event.preventDefault();
       submitGuess();
+      moveToNextInput(event) 
     } else {
     moveToNextInput(event) 
     }
