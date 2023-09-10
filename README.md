@@ -8,3 +8,4 @@ This repo is associated with the [Refactor Tractor - 1 Day Challenge activity](h
 4. Open the app with `open index.html`
 
 Relies on [turdle-api](https://github.com/turingschool-examples/turdle-api) for data!
+Stopped after Iteration 2
